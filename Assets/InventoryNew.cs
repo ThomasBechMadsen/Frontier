@@ -8,6 +8,7 @@ public class InventoryNew : MonoBehaviour
     public GameObject itemObject;
     public GameObject UIInventory;
     public GameObject UIItemInHands;
+    public GameObject UIWeight;
 
     void Start()
     {
@@ -69,14 +70,15 @@ public class InventoryNew : MonoBehaviour
 
     public void showInventory()
     {
-        UIInventory.gameObject.SetActive(true);
-        UIItemInHands.gameObject.SetActive(true);
+        UIInventory.transform.parent.gameObject.SetActive(true);
+        UIItemInHands.transform.parent.gameObject.SetActive(true);
+        UIWeight.GetComponent<Text>().text = "Weight: " + getInventoryWeight() + " kgs";
     }
 
     public void hideInventory()
     {
-        UIInventory.gameObject.SetActive(false);
-        UIItemInHands.gameObject.SetActive(false);
+        UIInventory.transform.parent.gameObject.SetActive(false);
+        UIItemInHands.transform.parent.gameObject.SetActive(false);
     }
 
     public GameObject getFirstOccurenceOf(string name)

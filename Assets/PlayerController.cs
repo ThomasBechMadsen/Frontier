@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
         if (Input.GetButtonDown("Inventory"))
         {
-            if (inventory.UIItemInHands.activeSelf && inventory.UIInventory.activeSelf)
+            if (inventory.UIItemInHands.transform.parent.gameObject.activeSelf && inventory.UIInventory.transform.parent.gameObject.activeSelf)
             {
                 inventory.hideInventory();
                 Cursor.lockState = CursorLockMode.Locked;
