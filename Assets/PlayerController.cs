@@ -16,8 +16,9 @@ public class PlayerController : MonoBehaviour {
     private float verticalSpeed = 0;
     private enum Stance {standing, crouched, prone};
     private Stance currentStance = Stance.standing;
-    private Inventory inventory;
+    private InventoryNew inventory;
     private Camera playerCamera;
+    private bool usingInventory = false;
 
     Vector2 smoothV;
     Vector2 mouseLook;
@@ -29,81 +30,86 @@ public class PlayerController : MonoBehaviour {
         playerCamera = transform.Find("Main Camera").GetComponent<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
         moveMultiplier = walkSpeed;
-        inventory = GetComponent<Inventory>();
+        inventory = transform.Find("InventoryCanvas").GetComponent<InventoryNew>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        movementHandle();
-        rotationHandle();
-        stanceHandle();
-
-        //Shooting
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if(inventory.itemInHands is UsableItem)
-            {
-                UsableItem a = inventory.itemInHands as UsableItem;
-                a.use();
-            }
-        }
-
-        //Reloading
-        if (Input.GetButtonDown("Reload"))
-        {
-                if (inventory.itemInHands is Rifle) {
-                    Rifle rifle = inventory.itemInHands as Rifle;
-                    rifle.reload();
-                }
-        }
-
-        if (Input.GetButtonDown("Aim"))
-        {
-            if (inventory.itemInHands is Rifle)
-            {
-                Rifle rifle = inventory.itemInHands as Rifle;
-                rifle.aim(true);
-            }
-        }
-
-        if (Input.GetButtonUp("Aim"))
-        {
-            if (inventory.itemInHands is Rifle)
-            {
-                Rifle rifle = inventory.itemInHands as Rifle;
-                rifle.aim(false);
-            }
-        }
-
         if (Input.GetButtonDown("Inventory"))
         {
-            if (inventory.uiEnabled)
+            if (inventory.UIItemInHands.activeSelf && inventory.UIInventory.activeSelf)
             {
                 inventory.hideInventory();
+                Cursor.lockState = CursorLockMode.Locked;
+                usingInventory = false;
             }
             else
             {
                 inventory.showInventory();
+                Cursor.lockState = CursorLockMode.None;
+                usingInventory = true;
             }
         }
 
-        if (Input.GetButtonDown("Interact"))
-        {
-            RaycastHit raycastHit;
-            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-            if (Physics.Raycast(ray, out raycastHit, 2))
+        if (!usingInventory) {
+            movementHandle();
+            rotationHandle();
+            stanceHandle();
+
+            //Shooting
+            if (Input.GetButtonDown("Fire1"))
             {
-                //Debug.DrawLine(playerCamera.transform.position, raycastHit.point, Color.red, 10);
-                if (raycastHit.collider.gameObject.CompareTag("Pickupable"))
+                if (inventory.getItemInHands() is UsableItem)
                 {
-                    if (inventory.addItem(raycastHit.collider.transform.GetChild(0).GetComponent<pickupScript>().itemYield))
+                    UsableItem a = inventory.getItemInHands() as UsableItem;
+                    a.use();
+                }
+            }
+
+            //Reloading
+            if (Input.GetButtonDown("Reload"))
+            {
+                if (inventory.getItemInHands() is Rifle) {
+                    Rifle rifle = inventory.getItemInHands() as Rifle;
+                    rifle.reload();
+                }
+            }
+
+            if (Input.GetButtonDown("Aim"))
+            {
+                if (inventory.getItemInHands() is Rifle)
+                {
+                    Rifle rifle = inventory.getItemInHands() as Rifle;
+                    rifle.aim(true);
+                }
+            }
+
+            if (Input.GetButtonUp("Aim"))
+            {
+                if (inventory.getItemInHands() is Rifle)
+                {
+                    Rifle rifle = inventory.getItemInHands() as Rifle;
+                    rifle.aim(false);
+                }
+            }
+
+            if (Input.GetButtonDown("Interact"))
+            {
+                RaycastHit raycastHit;
+                Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+                if (Physics.Raycast(ray, out raycastHit, 2))
+                {
+                    //Debug.DrawLine(playerCamera.transform.position, raycastHit.point, Color.red, 10);
+                    if (raycastHit.collider.gameObject.CompareTag("Pickupable"))
                     {
-                        Destroy(raycastHit.collider.gameObject);
+                        if (inventory.addItem(raycastHit.collider.transform.GetChild(0).GetComponent<pickupScript>().itemYield))
+                        {
+                            Destroy(raycastHit.collider.gameObject);
+                        }
                     }
                 }
             }
         }
-
     }
 
 

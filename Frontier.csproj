@@ -81,17 +81,19 @@
     <Compile Include="Assets\AnimalHealth.cs" />
     <Compile Include="Assets\Crosshair.cs" />
     <Compile Include="Assets\DeerAI.cs" />
-    <Compile Include="Assets\Inventory.cs" />
+    <Compile Include="Assets\InventoryNew.cs" />
     <Compile Include="Assets\ItemHandler.cs" />
     <Compile Include="Assets\Items\Axe.cs" />
-    <Compile Include="Assets\Items\Item.cs" />
+    <Compile Include="Assets\Items\ItemData.cs" />
     <Compile Include="Assets\Items\Rifle.cs" />
     <Compile Include="Assets\Items\UsableItem.cs" />
     <Compile Include="Assets\PlayerController.cs" />
     <Compile Include="Assets\TreeScript.cs" />
+    <Compile Include="Assets\UI\NewInventory\ItemUIHandler.cs" />
+    <Compile Include="Assets\UI\NewInventory\Slot.cs" />
+    <Compile Include="Assets\UI\OldInventory\uiItemScript.cs" />
     <Compile Include="Assets\noiseEmitter.cs" />
     <Compile Include="Assets\pickupScript.cs" />
-    <Compile Include="Assets\uiItemScript.cs" />
     <Compile Include="Assets\worldObjectItemContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

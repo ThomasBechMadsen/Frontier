@@ -6,6 +6,7 @@ public class ItemHandler : MonoBehaviour {
 
     bool working;
     public Camera playerCamera;
+    public GameObject inventoryCanvas;
 
 
     public bool swingAxe(Axe axe)
@@ -48,14 +49,18 @@ public class ItemHandler : MonoBehaviour {
 
     private IEnumerator reloadRoutine(Rifle rifle)
     {
-        if (!rifle.loaded)
+        GameObject ammo = inventoryCanvas.GetComponent<InventoryNew>().getFirstOccurenceOf("Ammo");
+        if (!rifle.loaded && ammo != null)
         {
             print("reloading...");
             yield return new WaitForSeconds(rifle.reloadTime);
-            GetComponent<Inventory>().removeItem(GetComponent<Inventory>().getFirstOccurenceOf("Ammo"));
+            inventoryCanvas.GetComponent<InventoryNew>().deleteItem(ammo);
             rifle.loaded = true;
             working = false;
             print("Reloaded!");
+        }
+        else{
+            print("Unable to reload");
         }
     }
 
@@ -120,8 +125,8 @@ public class ItemHandler : MonoBehaviour {
         {
             DeerAI ai = animal.GetComponent<DeerAI>();
             float distance = Vector3.Distance(animal.transform.position, transform.position);
-            print(soundDistance);
-            print((distance - ai.scaredHearingDistance));
+            //print(soundDistance);
+            //print((distance - ai.scaredHearingDistance));
             if ((distance - ai.scaredHearingDistance) <= soundDistance)
             {
                 ai.setState(DeerState.Scared);
