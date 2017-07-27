@@ -42,9 +42,25 @@ public class ItemHandler : MonoBehaviour {
         return false;
     }
 
-    public void aimWeapon(bool aim)
+    public void aimWeapon(Rifle rifle)
     {
-        transform.Find("Main Camera").GetComponent<Crosshair>().drawCrosshair(aim);
+        StartCoroutine(aimRoutine(rifle));
+    }
+
+    private IEnumerator aimRoutine(Rifle rifle)
+    {
+        Animation anim = playerCamera.transform.GetChild(0).GetChild(0).GetComponent<Animation>();
+        AnimationState animState = anim.PlayQueued("AimAnimation", QueueMode.PlayNow);
+        if (rifle.aimed)
+        {
+            animState.speed = -1;
+            animState.time = anim.clip.length;
+        }
+        rifle.aimed = !rifle.aimed;
+        yield return new WaitForSeconds(anim.GetClip("AimAnimation").length);
+        if (rifle.aimed) {
+            playerCamera.transform.GetChild(0).GetChild(0).localPosition = rifle.aimedPosition;
+        }
     }
 
     private IEnumerator reloadRoutine(Rifle rifle)
@@ -68,9 +84,10 @@ public class ItemHandler : MonoBehaviour {
     {
         if (rifle.loaded) {
             print("Bang!");
-            animalNoiseAlert(rifle.noiseDistance);
             RaycastHit raycastHit;
             Vector3 rayDirection;
+            animalNoiseAlert(rifle.noiseDistance);
+            rifle.loaded = false;
             if (rifle.aimed) //Add inaccuracy
             {
                 rayDirection = new Vector3(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f), 1);
@@ -84,8 +101,8 @@ public class ItemHandler : MonoBehaviour {
             if (Physics.Raycast(ray, out raycastHit))
             {
                 Debug.DrawLine(playerCamera.transform.position, raycastHit.point, Color.red, 10);
-                print("hit: " + raycastHit.transform.name);
-                if (raycastHit.collider.transform.parent.tag == "Animal")
+                print("Hit: " + raycastHit.transform.name);
+                if (raycastHit.collider.tag == "Animal")
                 {
                     raycastHit.collider.transform.parent.gameObject.GetComponent<AnimalHealth>().dealDamage(rifle.damage);
                 }
@@ -124,7 +141,7 @@ public class ItemHandler : MonoBehaviour {
         GameObject[] animals = GameObject.FindGameObjectsWithTag("Animal");
         foreach(GameObject animal in animals)
         {
-            DeerAI ai = animal.GetComponent<DeerAI>();
+            DeerAI ai = animal.transform.parent.gameObject.GetComponent<DeerAI>();
             float distance = Vector3.Distance(animal.transform.position, transform.position);
             //print(soundDistance);
             //print((distance - ai.scaredHearingDistance));

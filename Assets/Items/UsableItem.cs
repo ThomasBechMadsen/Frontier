@@ -6,7 +6,7 @@ public abstract class UsableItem : ItemData {
 
     protected ItemHandler handler;
 
-    public UsableItem(ItemHandler handler, string itemName, float weight, Sprite sprite, GameObject worldObject) : base(itemName, weight, sprite, worldObject)
+    public UsableItem(ItemHandler handler, string itemName, float weight, Sprite sprite, GameObject worldItem, GameObject handsItem) : base(itemName, weight, sprite, worldItem, handsItem)
     {
         this.handler = handler;
     }

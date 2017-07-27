@@ -6,8 +6,7 @@ using UnityEngine.AI;
 public class AnimalHealth : MonoBehaviour {
 
     public float health;
-    public GameObject pickupable;
-    public ItemData itemYield;
+    public GameObject corpse;
 
     public void dealDamage(float damage)
     {
@@ -34,13 +33,9 @@ public class AnimalHealth : MonoBehaviour {
         }
         else
         {
-            GetComponent<NavMeshAgent>().enabled = false;
-            GetComponent<DeerAI>().enabled = false;
-            GetComponent<DeerAI>().isDead = true;
-            this.enabled = false;
-            GameObject g = Instantiate(pickupable, transform);
-            g.GetComponent<pickupScript>().itemYield = itemYield;
-            tag = "Pickupable";
+            GameObject loot = Instantiate(corpse, transform.position, transform.rotation);
+            Destroy(gameObject);
+            //Time.timeScale = 0;
             return false;
         }
     }

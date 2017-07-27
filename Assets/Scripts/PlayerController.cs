@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour {
                 if (inventory.getItemInHands() is Rifle)
                 {
                     Rifle rifle = inventory.getItemInHands() as Rifle;
-                    rifle.aim(true);
+                    rifle.aim();
                 }
             }
 
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour {
                 if (inventory.getItemInHands() is Rifle)
                 {
                     Rifle rifle = inventory.getItemInHands() as Rifle;
-                    rifle.aim(false);
+                    rifle.aim();
                 }
             }
 
@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour {
                     //Debug.DrawLine(playerCamera.transform.position, raycastHit.point, Color.red, 10);
                     if (raycastHit.collider.gameObject.CompareTag("Pickupable"))
                     {
-                        if (inventory.addItem(raycastHit.collider.gameObject.GetComponent<worldObjectItemContainer>().item))
+                        if (inventory.addItem(raycastHit.collider.transform.Find("Pickupable").GetComponent<pickupScript>().item))
                         {
                             Destroy(raycastHit.collider.gameObject);
                         }

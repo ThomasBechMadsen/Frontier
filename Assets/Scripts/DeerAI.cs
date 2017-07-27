@@ -39,8 +39,6 @@ public class DeerAI : MonoBehaviour {
     public float onEdgeHearingDistance;
     public float scaredHearingDistance;
 
-    public bool isDead = false;
-
     // Use this for initialization
     void Start () {
         agent = GetComponent<NavMeshAgent>();
@@ -66,7 +64,7 @@ public class DeerAI : MonoBehaviour {
                     agent.speed = scaredSpeed;
                     break;
             }
-            print(currentState.ToString());
+            print(currentState);
         }
     }
 
@@ -112,12 +110,13 @@ public class DeerAI : MonoBehaviour {
 
     private IEnumerator checkSurroundings()
     {
-        if (!isDead) {
+        if (GetComponent<AnimalHealth>().health > 0) {
 
             //Check if destination has been reached
             if (agent.remainingDistance <= 1)
             {
                 print("Destination reached!");
+                lowerState();
                 findNewDestination();
             }
 
@@ -140,18 +139,6 @@ public class DeerAI : MonoBehaviour {
                     }
                 }
             }
-            /* Scrapped for now
-            if (distance < scaredHearingDistance + playerNoise.getNoiseValue())
-            {
-                print("Noise scared");
-                setState(DeerState.Scared);
-            }
-            else if (distance < onEdgeHearingDistance + playerNoise.getNoiseValue())
-            {
-                print("Noise onEdge");
-                increaseState();
-            }
-            */
             yield return new WaitForSeconds(secondsBetweenSurroundingsCheck);
             StartCoroutine(checkSurroundings());
             

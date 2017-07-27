@@ -14,9 +14,9 @@ public class Inventory : MonoBehaviour
     void Start()
     {
         itemModelHolder = transform.parent.GetChild(0).GetChild(0);
-        addItem(new Rifle(transform.parent.GetComponent<ItemHandler>(), "Old Trusty", 5, null, (GameObject)Resources.Load("Musket"), 100, 100, 3, 1, true));
-        addItem(new ItemData("Ammo", 0.1f, null, null));
-        addItem(new Axe(transform.parent.GetComponent<ItemHandler>(), "Axe", 3, null, null, 100, 1));
+        addItem(new Rifle(transform.parent.GetComponent<ItemHandler>(), "Old Trusty", 5, null, (GameObject)Resources.Load("worldItems/MusketWorld"), (GameObject)Resources.Load("handsItems/MusketHands"), 100, 100, 3, 1, true));
+        addItem(new ItemData("Ammo", 0.1f, null, null, null));
+        addItem(new Axe(transform.parent.GetComponent<ItemHandler>(), "Axe", 3, null, null, null, 100, 1));
         //deleteItem(getObject(0));
         //dropItem(getObject(0));
 
@@ -60,7 +60,7 @@ public class Inventory : MonoBehaviour
     {
         print("Dropping item");
         deleteItem(item);
-        GameObject g = Instantiate(item.GetComponent<worldObjectItemContainer>().item.worldObject, transform.parent.TransformPoint(Vector3.forward), Quaternion.Euler(Vector3.forward));
+        GameObject g = Instantiate(item.GetComponent<worldObjectItemContainer>().item.worldItem, transform.parent.TransformPoint(Vector3.forward), Quaternion.Euler(Vector3.forward));
         g.GetComponent<Rigidbody>().isKinematic = false;
         g.GetComponent<MeshCollider>().enabled = true;
         g.GetComponent<worldObjectItemContainer>().item = item.GetComponent<worldObjectItemContainer>().item;
@@ -92,7 +92,7 @@ public class Inventory : MonoBehaviour
         {
             if (slot.childCount > 0)
             {
-                if (getItemData(slot).itemName.Equals(name))
+                if (getSlotItemData(slot).itemName.Equals(name))
                 {
                     return slot.GetChild(0).gameObject;
                 }
@@ -108,7 +108,7 @@ public class Inventory : MonoBehaviour
         {
             if (slot.childCount > 0)
             {
-                totalWeight += getItemData(slot).weight;
+                totalWeight += getSlotItemData(slot).weight;
             }
         }
         return totalWeight;
@@ -118,7 +118,7 @@ public class Inventory : MonoBehaviour
     {
         if (UIItemInHands.transform.GetChild(0).childCount > 0)
         {
-            return getItemData(UIItemInHands.transform.GetChild(0));
+            return getSlotItemData(UIItemInHands.transform.GetChild(0));
         }
         return null;
     }
@@ -129,12 +129,15 @@ public class Inventory : MonoBehaviour
         {
             Destroy(itemModelHolder.GetChild(0).gameObject);
         }
-        if (getItemInHands().worldObject != null) {
-            Instantiate(getItemInHands().worldObject, itemModelHolder, false);
+        if (getItemInHands() != null) {
+            if (getItemInHands().handsItem != null)
+            {
+                Instantiate(getItemInHands().handsItem, itemModelHolder, false);
+            }
         }
     }
 
-    private ItemData getItemData(Transform slot)
+    private ItemData getSlotItemData(Transform slot)
     {
         return slot.GetChild(0).GetComponent<worldObjectItemContainer>().item;
     }
